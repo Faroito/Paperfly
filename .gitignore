@@ -6,6 +6,7 @@
 *.lo
 *.o
 *.obj
+*spv
 
 # Precompiled Headers
 *.gch
@@ -30,3 +31,8 @@
 *.exe
 *.out
 *.app
+
+# Directories
+.idea/
+cmake-build-debug/
+CompiledShader/
