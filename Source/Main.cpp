@@ -9,7 +9,6 @@
 #include <tiny_obj_loader.h>
 
 #include "Application.hpp"
-#include "Libraries.hpp"
 
 int main(int ac, char *av[]) {
     renderer::Application app;

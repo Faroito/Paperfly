@@ -37,8 +37,6 @@ namespace renderer {
         void updateUniformBuffer(uint32_t currentImage);
 
         void createInstance();
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
-        void setupDebugMessenger();
 
         void createSurface();
         void pickPhysicalDevice();
@@ -105,7 +103,7 @@ namespace renderer {
         GLFWwindow* _window;
 
         VkInstance _instance;
-        VkDebugUtilsMessengerEXT _debugMessenger;
+        Debug _debugMessenger;
 
         VkSurfaceKHR _surface;
 

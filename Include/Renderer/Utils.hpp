@@ -13,13 +13,6 @@
 #include "Libraries.hpp"
 
 namespace renderer {
-
-    #ifdef NDEBUG
-        const bool enableValidationLayers = false;
-    #else
-        const bool enableValidationLayers = true;
-    #endif
-
     const int WIDTH = 1024;
     const int HEIGHT = 768;
     const int MAX_FRAMES_IN_FLIGHT = 2;
