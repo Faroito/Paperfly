@@ -9,10 +9,10 @@
 #include <tiny_obj_loader.h>
 
 #include "Application.hpp"
-#include "Library.hpp"
+#include "Libraries.hpp"
 
 int main(int ac, char *av[]) {
-    Application app;
+    renderer::Application app;
 
     try {
         app.run();
