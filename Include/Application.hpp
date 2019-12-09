@@ -17,9 +17,12 @@
 
 #include "Debug.hpp"
 #include "Devices.hpp"
+#include "Framebuffers.hpp"
+#include "GraphicsPipeline.hpp"
 #include "Instance.hpp"
 #include "Libraries.hpp"
 #include "Surface.hpp"
+#include "SwapChain.hpp"
 #include "Utils.hpp"
 #include "Vertex.hpp"
 
@@ -38,34 +41,18 @@ namespace renderer {
         void drawFrame();
         void updateUniformBuffer(uint32_t currentImage);
 
-        void createSwapChain();
         void recreateSwapChain();
         void cleanupSwapChain();
-        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
-        void createImageViews();
-
-        void createRenderPass();
-        void createDescriptorSetLayout();
-        void createGraphicsPipeline();
-        VkShaderModule createShaderModule(const std::vector<char>& code);
-
-        void createFramebuffers();
         void createCommandPool();
 
         void createDepthResources();
-        VkFormat findDepthFormat();
-        VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
-                VkImageTiling tiling, VkFormatFeatureFlags features);
 
         void createTextureImage();
         void createTextureImageView();
         void createTextureSampler();
         void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
                 VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-        VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
         void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
@@ -95,19 +82,10 @@ namespace renderer {
         Debug _debugMessenger;
         Surface _surface;
         Devices _devices;
+        SwapChain _swapChain;
+        GraphicsPipeline _pipeline;
+        Framebuffers _framebuffers;
 
-        VkSwapchainKHR _swapChain;
-        std::vector<VkImage> _swapChainImages;
-        VkFormat _swapChainImageFormat;
-        VkExtent2D _swapChainExtent;
-        std::vector<VkImageView> _swapChainImageViews;
-
-        VkRenderPass _renderPass;
-        VkDescriptorSetLayout _descriptorSetLayout;
-        VkPipelineLayout _pipelineLayout;
-        VkPipeline _graphicsPipeline;
-
-        std::vector<VkFramebuffer> _swapChainFramebuffers;
         VkCommandPool _commandPool;
         std::vector<VkCommandBuffer> _commandBuffers;
 

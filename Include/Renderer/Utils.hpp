@@ -49,6 +49,10 @@ namespace renderer {
     };
 
     std::vector<char> readFile(const std::string& filename);
+    VkImageView createImageView(VkDevice &device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+    VkFormat findDepthFormat(VkPhysicalDevice &device);
+    VkFormat findSupportedFormat(VkPhysicalDevice &device, const std::vector<VkFormat>& candidates,
+                                 VkImageTiling tiling, VkFormatFeatureFlags features);
 };
 
 #endif /* !UTILS_HPP */
