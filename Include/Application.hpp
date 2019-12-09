@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <chrono>
+#include <unordered_map>
 
 #include "Library.hpp"
 
@@ -57,15 +58,23 @@ private:
 
     void createFramebuffers();
     void createCommandPool();
+
+    void createDepthResources();
+    VkFormat findDepthFormat();
+    VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
+            VkImageTiling tiling, VkFormatFeatureFlags features);
+    bool hasStencilComponent(VkFormat format);
+
     void createTextureImage();
     void createTextureImageView();
     void createTextureSampler();
     void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
             VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-    VkImageView createImageView(VkImage image, VkFormat format);
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
+    void loadModel();
     void createVertexBuffer();
     void createIndexBuffer();
     void createUniformBuffers();
@@ -127,10 +136,17 @@ private:
     VkCommandPool _commandPool;
     std::vector<VkCommandBuffer> _commandBuffers;
 
+    VkImage _depthImage;
+    VkDeviceMemory _depthImageMemory;
+    VkImageView _depthImageView;
+
     VkImage _textureImage;
     VkDeviceMemory _textureImageMemory;
     VkImageView _textureImageView;
     VkSampler _textureSampler;
+
+    std::vector<Vertex> _vertices;
+    std::vector<uint32_t> _indices;
 
     VkBuffer _vertexBuffer;
     VkDeviceMemory _vertexBufferMemory;
