@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <fstream>
+#include <chrono>
 
 #include "Library.hpp"
 
@@ -29,6 +30,7 @@ private:
     void cleanup();
 
     void drawFrame();
+    void updateUniformBuffer(uint32_t currentImage);
 
     void createInstance();
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
@@ -49,11 +51,21 @@ private:
     void createImageViews();
 
     void createRenderPass();
+    void createDescriptorSetLayout();
     void createGraphicsPipeline();
     VkShaderModule createShaderModule(const std::vector<char>& code);
 
     void createFramebuffers();
     void createCommandPool();
+    void createVertexBuffer();
+    void createIndexBuffer();
+    void createUniformBuffers();
+    void createDescriptorPool();
+    void createDescriptorSets();
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+            VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     void createCommandBuffers();
 
     void createSyncObjects();
@@ -96,12 +108,24 @@ private:
     std::vector<VkImageView> _swapChainImageViews;
 
     VkRenderPass _renderPass;
+    VkDescriptorSetLayout _descriptorSetLayout;
     VkPipelineLayout _pipelineLayout;
     VkPipeline _graphicsPipeline;
 
     std::vector<VkFramebuffer> _swapChainFramebuffers;
     VkCommandPool _commandPool;
     std::vector<VkCommandBuffer> _commandBuffers;
+
+    VkBuffer _vertexBuffer;
+    VkDeviceMemory _vertexBufferMemory;
+    VkBuffer _indexBuffer;
+    VkDeviceMemory _indexBufferMemory;
+
+    std::vector<VkBuffer> _uniformBuffers;
+    std::vector<VkDeviceMemory> _uniformBuffersMemory;
+
+    VkDescriptorPool _descriptorPool;
+    std::vector<VkDescriptorSet> _descriptorSets;
 
     size_t _currentFrame = 0;
     std::vector<VkSemaphore> _imageAvailableSemaphores;

@@ -12,6 +12,7 @@ find_package(Vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/Include/)
+include_directories(${PROJECT_SOURCE_DIR}/Libraries/)
 
 if (VULKAN_FOUND)
     message(STATUS "Found Vulkan, Including and Linking now")
