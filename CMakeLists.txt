@@ -5,6 +5,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++17")
 
 add_executable(${PROJECT_NAME}
         Source/Renderer/Debug.cpp
+        Source/Renderer/Devices.cpp
+        Source/Renderer/Instance.cpp
+        Source/Renderer/Surface.cpp
         Source/Renderer/Utils.cpp
         Source/Application.cpp
         Source/Main.cpp)

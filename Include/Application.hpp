@@ -10,14 +10,16 @@
 #include <functional>
 #include <optional>
 #include <vector>
-#include <set>
 #include <cstdint>
 #include <cstdlib>
 #include <chrono>
 #include <unordered_map>
 
 #include "Debug.hpp"
+#include "Devices.hpp"
+#include "Instance.hpp"
 #include "Libraries.hpp"
+#include "Surface.hpp"
 #include "Utils.hpp"
 #include "Vertex.hpp"
 
@@ -36,16 +38,9 @@ namespace renderer {
         void drawFrame();
         void updateUniformBuffer(uint32_t currentImage);
 
-        void createInstance();
-
-        void createSurface();
-        void pickPhysicalDevice();
-        void createLogicalDevice();
-
         void createSwapChain();
         void recreateSwapChain();
         void cleanupSwapChain();
-        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
@@ -90,28 +85,16 @@ namespace renderer {
 
         void createSyncObjects();
 
-        bool isDeviceSuitable(VkPhysicalDevice device);
-        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        std::vector<const char*> getRequiredExtensions();
-        bool checkValidationLayerSupport();
-
         static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
     private:
+        const std::string _appName = "Paperfly";
         GLFWwindow* _window;
 
-        VkInstance _instance;
+        Instance _instance;
         Debug _debugMessenger;
-
-        VkSurfaceKHR _surface;
-
-        VkDevice _device;
-        VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
-
-        VkQueue _graphicsQueue;
-        VkQueue _presentQueue;
+        Surface _surface;
+        Devices _devices;
 
         VkSwapchainKHR _swapChain;
         std::vector<VkImage> _swapChainImages;
