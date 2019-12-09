@@ -33,5 +33,6 @@
 
 # Directories
 .idea/
+Libraries/
 cmake-build-debug/
 CompiledShader/
