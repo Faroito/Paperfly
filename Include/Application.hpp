@@ -13,70 +13,103 @@
 #include <set>
 #include <cstdint>
 #include <cstdlib>
+#include <fstream>
 
 #include "Library.hpp"
 
 class Application {
-    public:
-        Application() = default;
-        void run();
+public:
+    Application() = default;
+    void run();
 
-    private:
-        void initWindow();
-        void initVulkan();
-        void mainLoop();
-        void cleanup();
+private:
+    void initWindow();
+    void initVulkan();
+    void mainLoop();
+    void cleanup();
 
-        void createInstance();
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
-        void setupDebugMessenger();
+    void drawFrame();
 
-        void createSurface();
-        void pickPhysicalDevice();
-        void createLogicalDevice();
+    void createInstance();
+    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+    void setupDebugMessenger();
 
-        void createSwapChain();
-        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+    void createSurface();
+    void pickPhysicalDevice();
+    void createLogicalDevice();
 
-        void createImageViews();
+    void createSwapChain();
+    void recreateSwapChain();
+    void cleanupSwapChain();
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
-        void createGraphicsPipeline();
+    void createImageViews();
 
-        bool isDeviceSuitable(VkPhysicalDevice device);
-        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+    void createRenderPass();
+    void createGraphicsPipeline();
+    VkShaderModule createShaderModule(const std::vector<char>& code);
 
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        std::vector<const char*> getRequiredExtensions();
-        bool checkValidationLayerSupport();
+    void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffers();
 
-        static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-                VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                VkDebugUtilsMessageTypeFlagsEXT messageType,
-                const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                void* pUserData);
+    void createSyncObjects();
 
-    private:
-        GLFWwindow* _window;
+    bool isDeviceSuitable(VkPhysicalDevice device);
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
-        VkInstance _instance;
-        VkDebugUtilsMessengerEXT _debugMessenger;
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+    std::vector<const char*> getRequiredExtensions();
+    bool checkValidationLayerSupport();
 
-        VkSurfaceKHR _surface;
+    static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
-        VkDevice _device;
-        VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+    static std::vector<char> readFile(const std::string& filename);
 
-        VkQueue _graphicsQueue;
-        VkQueue _presentQueue;
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+            VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+            VkDebugUtilsMessageTypeFlagsEXT messageType,
+            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+            void* pUserData);
 
-        VkSwapchainKHR _swapChain;
-        std::vector<VkImage> _swapChainImages;
-        VkFormat _swapChainImageFormat;
-        VkExtent2D _swapChainExtent;
-        std::vector<VkImageView> _swapChainImageViews;
+private:
+    GLFWwindow* _window;
+
+    VkInstance _instance;
+    VkDebugUtilsMessengerEXT _debugMessenger;
+
+    VkSurfaceKHR _surface;
+
+    VkDevice _device;
+    VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+
+    VkQueue _graphicsQueue;
+    VkQueue _presentQueue;
+
+    VkSwapchainKHR _swapChain;
+    std::vector<VkImage> _swapChainImages;
+    VkFormat _swapChainImageFormat;
+    VkExtent2D _swapChainExtent;
+    std::vector<VkImageView> _swapChainImageViews;
+
+    VkRenderPass _renderPass;
+    VkPipelineLayout _pipelineLayout;
+    VkPipeline _graphicsPipeline;
+
+    std::vector<VkFramebuffer> _swapChainFramebuffers;
+    VkCommandPool _commandPool;
+    std::vector<VkCommandBuffer> _commandBuffers;
+
+    size_t _currentFrame = 0;
+    std::vector<VkSemaphore> _imageAvailableSemaphores;
+    std::vector<VkSemaphore> _renderFinishedSemaphores;
+    std::vector<VkFence> _inFlightFences;
+    std::vector<VkFence> _imagesInFlight;
+
+    bool _framebufferResized = false;
 };
 
 #endif /* !APPLICATION_HPP */
