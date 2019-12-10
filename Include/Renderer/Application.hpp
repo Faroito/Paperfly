@@ -5,10 +5,6 @@
 #ifndef APPLICATION_HPP
 # define APPLICATION_HPP
 
-#include <iostream>
-#include <functional>
-#include <vector>
-
 #include "BufferManip.hpp"
 #include "CommandPool.hpp"
 #include "Debug.hpp"
@@ -24,27 +20,32 @@
 #include "SyncObjects.hpp"
 #include "Utils.hpp"
 #include "Vertex.hpp"
+#include "Window.hpp"
 
 namespace renderer {
     class Application {
     public:
-        Application() = default;
+        explicit Application(const std::string &appName);
+        ~Application();
+
         void run();
 
+    protected:
+        virtual void onDraw();
+
     private:
-        void initWindow();
         void initVulkan();
-        void mainLoop();
+
         void cleanup();
-
-        void recreateSwapChain();
         void cleanupSwapChain();
+        void recreateSwapChain();
 
-        static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
+    protected:
+        Window _window;
+        Model _model;
 
     private:
-        const std::string _appName = "Paperfly";
-        GLFWwindow* _window = nullptr;
+        const std::string _appName;
 
         Instance _instance;
         Debug _debugMessenger;
@@ -55,10 +56,7 @@ namespace renderer {
         CommandPool _commandPool;
         DepthImage _depthImage;
         Framebuffers _framebuffers;
-        Model _model;
         SyncObjects _syncObjects;
-
-        bool _framebufferResized = false;
     };
 };
 

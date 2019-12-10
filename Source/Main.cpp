@@ -8,10 +8,10 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-#include "Application.hpp"
+#include "Paperfly.hpp"
 
 int main(int ac, char *av[]) {
-    renderer::Application app;
+    scene::Paperfly app;
 
     try {
         app.run();
