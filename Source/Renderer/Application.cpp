@@ -5,7 +5,7 @@
 #include "Application.hpp"
 
 renderer::Application::Application(const std::string &appName) : _appName(appName) {
-    _window.setUp(_appName);
+    _window.setUp(this, _appName);
     initVulkan();
 }
 
@@ -77,3 +77,11 @@ void renderer::Application::recreateSwapChain() {
     _framebuffers.setUp(_devices.get(), _swapChain, _pipeline.getRenderPass(), _depthImage.get());
     _model.setUpSwapChain(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get());
 }
+
+void renderer::Application::onMouseMove(double x, double y) {}
+
+void renderer::Application::onMouseDown(int button, int action) {}
+
+void renderer::Application::onMouseScroll(double x, double y) {}
+
+void renderer::Application::onKeyDown(int key, int action) {}

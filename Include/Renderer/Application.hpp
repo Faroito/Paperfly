@@ -5,6 +5,7 @@
 #ifndef APPLICATION_HPP
 # define APPLICATION_HPP
 
+#include "IApplication.hpp"
 #include "BufferManip.hpp"
 #include "CommandPool.hpp"
 #include "Debug.hpp"
@@ -23,7 +24,7 @@
 #include "Window.hpp"
 
 namespace renderer {
-    class Application {
+    class Application : public IApplication {
     public:
         explicit Application(const std::string &appName);
         ~Application();
@@ -32,6 +33,11 @@ namespace renderer {
 
     protected:
         virtual void onDraw();
+
+        void onMouseMove(double x, double y) override;
+        void onMouseDown(int button, int action) override;
+        void onMouseScroll(double x, double y) override;
+        void onKeyDown(int key, int action) override;
 
     private:
         void initVulkan();
@@ -42,6 +48,7 @@ namespace renderer {
 
     protected:
         Window _window;
+        SwapChain _swapChain;
         Model _model;
 
     private:
@@ -51,7 +58,6 @@ namespace renderer {
         Debug _debugMessenger;
         Surface _surface;
         Devices _devices;
-        SwapChain _swapChain;
         GraphicsPipeline _pipeline;
         CommandPool _commandPool;
         DepthImage _depthImage;

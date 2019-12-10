@@ -5,6 +5,7 @@
 #ifndef WINDOW_HPP
 # define WINDOW_HPP
 
+#include "IApplication.hpp"
 #include "Libraries.hpp"
 #include "Utils.hpp"
 
@@ -17,13 +18,14 @@ namespace renderer {
     public:
         Window() = default;
 
-        void setUp(const std::string &appName);
+        void setUp(IApplication *app, const std::string &appName);
         void cleanUp();
 
         GLFWwindow *get();
         bool shouldClose();
 
         void resize();
+        void close();
 
     private:
         static void framebufferResizeCallback(GLFWwindow *window, int width, int height);

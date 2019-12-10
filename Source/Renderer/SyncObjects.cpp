@@ -53,7 +53,7 @@ bool renderer::SyncObjects::drawFrame(Devices &devices, SwapChain &swapChain, Mo
     // Mark the image as now being in use by this frame
     _imagesInFlight[imageIndex] = _inFlightFences[_currentFrame];
 
-    model.updateUniformBuffer(devices.get(), imageIndex, swapChain.ratio());
+    model.updateUniformBuffer(devices.get(), imageIndex);
 
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

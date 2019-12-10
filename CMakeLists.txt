@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/UniformBuffers.cpp
         Source/Renderer/Utils.cpp
         Source/Renderer/Window.cpp
+        Source/Scene/Camera.cpp
         Source/Scene/Paperfly.cpp
         Source/Main.cpp)
 

@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include "BufferManip.hpp"
+#include "Camera.hpp"
 #include "CommandBuffers.hpp"
 #include "Devices.hpp"
 #include "Libraries.hpp"
@@ -35,7 +36,8 @@ namespace renderer {
                             Framebuffers &framebuffers, VkCommandPool &pool);
         void cleanUpSwapChain(VkDevice &device, VkCommandPool &pool);
 
-        void updateUniformBuffer(VkDevice &device, uint32_t currentImage, float ratio);
+        void setCamera(scene::Camera_ptr_t &_camera, float ratio);
+        void updateUniformBuffer(VkDevice &device, uint32_t currentImage);
         VkCommandBuffer &getCommandBuffers(uint32_t i);
 
     private:
@@ -54,6 +56,7 @@ namespace renderer {
 
         Texture _texture;
 
+        UniformBufferObject _ubo = {};
         UniformBuffers _uniforms;
         CommandBuffers _commandBuffers;
     };
