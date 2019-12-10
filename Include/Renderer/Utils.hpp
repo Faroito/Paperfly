@@ -9,6 +9,8 @@
 #include <vector>
 #include <optional>
 #include <fstream>
+#include <cstdint>
+#include <cstdlib>
 
 #include "Libraries.hpp"
 
@@ -49,10 +51,10 @@ namespace renderer {
     };
 
     std::vector<char> readFile(const std::string& filename);
-    VkImageView createImageView(VkDevice &device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
     VkFormat findDepthFormat(VkPhysicalDevice &device);
     VkFormat findSupportedFormat(VkPhysicalDevice &device, const std::vector<VkFormat>& candidates,
                                  VkImageTiling tiling, VkFormatFeatureFlags features);
-};
+    uint32_t findMemoryType(VkPhysicalDevice &device, uint32_t typeFilter, VkMemoryPropertyFlags properties);
+}
 
 #endif /* !UTILS_HPP */

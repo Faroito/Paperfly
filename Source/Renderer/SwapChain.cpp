@@ -65,7 +65,7 @@ void renderer::SwapChain::createImageViews(VkDevice &device) {
     _swapChainImageViews.resize(_swapChainImages.size());
 
     for (uint32_t i = 0; i < _swapChainImages.size(); i++)
-        _swapChainImageViews[i] = createImageView(device, _swapChainImages[i],
+        _swapChainImageViews[i] = BufferManip::createImageView(device, _swapChainImages[i],
                                                   _swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 }

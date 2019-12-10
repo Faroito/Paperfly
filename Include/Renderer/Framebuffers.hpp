@@ -8,7 +8,6 @@
 #include <vector>
 #include <array>
 
-#include "Devices.hpp"
 #include "Libraries.hpp"
 #include "SwapChain.hpp"
 #include "Utils.hpp"

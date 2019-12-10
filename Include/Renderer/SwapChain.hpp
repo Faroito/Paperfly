@@ -7,6 +7,7 @@
 
 #include <vector>
 
+#include "BufferManip.hpp"
 #include "Devices.hpp"
 #include "Libraries.hpp"
 #include "Surface.hpp"
@@ -49,7 +50,6 @@ namespace renderer {
         VkExtent2D _swapChainExtent = {};
 
     };
-
 }
 
 #endif /* !SWAP_CHAIN_HPP */
