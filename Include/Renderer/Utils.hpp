@@ -19,8 +19,8 @@ namespace renderer {
     const int HEIGHT = 768;
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    const std::string MODEL_PATH = "../Resources/chalet.obj";
-    const std::string TEXTURE_PATH = "../Resources/chalet.jpg";
+    const std::string MODEL_PATH = "../Resources/bullet_bill.obj";
+    const std::string TEXTURE_PATH = "../Resources/default_texture.png";
 
     const std::vector<const char*> validationLayers = {
             "VK_LAYER_KHRONOS_validation"

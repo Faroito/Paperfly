@@ -127,7 +127,10 @@ void renderer::Model::updateUniformBuffer(VkDevice &device, uint32_t currentImag
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    _ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 translate = glm::mat4(1.0f);
+    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), time * glm::radians(25.0f), glm::vec3(0.f, 1.f, 0.f));
+    glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+    _ubo.model = translate * rotate * scale;
 
     void* data;
     vkMapMemory(device, _uniforms.getMemory(currentImage), 0, sizeof(_ubo), 0, &data);
