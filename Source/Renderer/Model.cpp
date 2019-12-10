@@ -104,18 +104,36 @@ void renderer::Model::cleanUp(VkDevice &device) {
     _texture.cleanUp(device);
 }
 
-VkBuffer &renderer::Model::getVertexBuffer() {
-    return _vertexBuffer;
+void renderer::Model::setUpSwapChain(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline,
+        Framebuffers &framebuffers, VkCommandPool &pool) {
+    _uniforms.setUp(devices, swapChain.size());
+    _commandBuffers.setUp(devices.get(), swapChain, pipeline, framebuffers, pool,
+            _texture, _vertexBuffer,_indexBuffer, _indices.size(), _uniforms);
 }
 
-VkBuffer &renderer::Model::getIndexBuffer() {
-    return _indexBuffer;
+void renderer::Model::cleanUpSwapChain(VkDevice &device, VkCommandPool &pool) {
+    _commandBuffers.cleanUp(device, pool);
+    _uniforms.cleanUp(device);
 }
 
-renderer::Texture &renderer::Model::getTexture() {
-    return _texture;
+void renderer::Model::updateUniformBuffer(VkDevice &device, uint32_t currentImage, float ratio) {
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    UniformBufferObject ubo = {};
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.proj = glm::perspective(glm::radians(45.0f), ratio, 0.1f, 10.0f);
+    ubo.proj[1][1] *= -1;
+
+    void* data;
+    vkMapMemory(device, _uniforms.getMemory(currentImage), 0, sizeof(ubo), 0, &data);
+    memcpy(data, &ubo, sizeof(ubo));
+    vkUnmapMemory(device, _uniforms.getMemory(currentImage));
 }
 
-size_t renderer::Model::size() const {
-    return _indices.size();
+VkCommandBuffer &renderer::Model::getCommandBuffers(uint32_t i) {
+    return _commandBuffers[i];
 }

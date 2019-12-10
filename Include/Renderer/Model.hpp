@@ -5,13 +5,16 @@
 #ifndef MODEL_HPP
 # define MODEL_HPP
 
+#include <chrono>
 #include <vector>
 #include <unordered_map>
 
 #include "BufferManip.hpp"
+#include "CommandBuffers.hpp"
 #include "Devices.hpp"
 #include "Libraries.hpp"
 #include "Texture.hpp"
+#include "UniformBuffers.hpp"
 #include "Utils.hpp"
 #include "Vertex.hpp"
 
@@ -28,10 +31,12 @@ namespace renderer {
         void setUp(Devices &devices, VkCommandPool &pool);
         void cleanUp(VkDevice &device);
 
-        VkBuffer &getVertexBuffer();
-        VkBuffer &getIndexBuffer();
-        Texture &getTexture();
-        size_t size() const;
+        void setUpSwapChain(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline,
+                            Framebuffers &framebuffers, VkCommandPool &pool);
+        void cleanUpSwapChain(VkDevice &device, VkCommandPool &pool);
+
+        void updateUniformBuffer(VkDevice &device, uint32_t currentImage, float ratio);
+        VkCommandBuffer &getCommandBuffers(uint32_t i);
 
     private:
         void loadModel();
@@ -49,6 +54,8 @@ namespace renderer {
 
         Texture _texture;
 
+        UniformBuffers _uniforms;
+        CommandBuffers _commandBuffers;
     };
 }
 

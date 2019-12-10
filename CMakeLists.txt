@@ -6,7 +6,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++17")
 add_executable(${PROJECT_NAME}
         Source/Renderer/BufferManip.cpp
         Source/Renderer/CommandBuffers.cpp
+        Source/Renderer/CommandPool.cpp
         Source/Renderer/Debug.cpp
+        Source/Renderer/DepthImage.cpp
         Source/Renderer/Devices.cpp
         Source/Renderer/Framebuffers.cpp
         Source/Renderer/GraphicsPipeline.cpp
@@ -14,6 +16,7 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/Model.cpp
         Source/Renderer/Surface.cpp
         Source/Renderer/SwapChain.cpp
+        Source/Renderer/SyncObjects.cpp
         Source/Renderer/Texture.cpp
         Source/Renderer/UniformBuffers.cpp
         Source/Renderer/Utils.cpp

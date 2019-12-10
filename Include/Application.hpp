@@ -8,20 +8,20 @@
 #include <iostream>
 #include <functional>
 #include <vector>
-#include <chrono>
 
 #include "BufferManip.hpp"
-#include "CommandBuffers.hpp"
+#include "CommandPool.hpp"
 #include "Debug.hpp"
+#include "DepthImage.hpp"
 #include "Devices.hpp"
 #include "Framebuffers.hpp"
 #include "GraphicsPipeline.hpp"
 #include "Instance.hpp"
-#include "Model.hpp"
 #include "Libraries.hpp"
+#include "Model.hpp"
 #include "Surface.hpp"
 #include "SwapChain.hpp"
-#include "UniformBuffers.hpp"
+#include "SyncObjects.hpp"
 #include "Utils.hpp"
 #include "Vertex.hpp"
 
@@ -37,14 +37,8 @@ namespace renderer {
         void mainLoop();
         void cleanup();
 
-        void drawFrame();
-        void updateUniformBuffer(uint32_t currentImage);
-
         void recreateSwapChain();
         void cleanupSwapChain();
-
-        void createDepthResources();
-        void createSyncObjects();
 
         static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
@@ -58,20 +52,11 @@ namespace renderer {
         Devices _devices;
         SwapChain _swapChain;
         GraphicsPipeline _pipeline;
+        CommandPool _commandPool;
+        DepthImage _depthImage;
         Framebuffers _framebuffers;
-        CommandBuffers _commands;
-        UniformBuffers _uniforms;
         Model _model;
-
-        VkImage _depthImage;
-        VkDeviceMemory _depthImageMemory;
-        VkImageView _depthImageView;
-
-        size_t _currentFrame = 0;
-        std::vector<VkSemaphore> _imageAvailableSemaphores;
-        std::vector<VkSemaphore> _renderFinishedSemaphores;
-        std::vector<VkFence> _inFlightFences;
-        std::vector<VkFence> _imagesInFlight;
+        SyncObjects _syncObjects;
 
         bool _framebufferResized = false;
     };

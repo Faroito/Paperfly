@@ -10,9 +10,9 @@
 
 #include "Framebuffers.hpp"
 #include "GraphicsPipeline.hpp"
-#include "Model.hpp"
 #include "Libraries.hpp"
 #include "SwapChain.hpp"
+#include "Texture.hpp"
 #include "UniformBuffers.hpp"
 #include "Utils.hpp"
 
@@ -26,30 +26,26 @@ namespace renderer {
     public:
         CommandBuffers() = default;
 
-        void setUpPool(VkDevice &device, QueueFamilyIndices queueFamilyIndices);
-        void setUpBuffers(VkDevice &device, SwapChain &swapChain, GraphicsPipeline &pipeline,
-                Framebuffers &framebuffers, Model &model, UniformBuffers &uniforms);
-        void cleanUpBuffers(VkDevice &device);
-        void cleanUpPool(VkDevice &device);
+        void setUp(VkDevice &device, SwapChain &swapChain, GraphicsPipeline &pipeline,
+                   Framebuffers &framebuffers, VkCommandPool &pool, Texture &texture,
+                   VkBuffer &vertexBuffer, VkBuffer &indexBuffer, size_t size, UniformBuffers &uniforms);
+        void cleanUp(VkDevice &device, VkCommandPool &pool);
 
-        VkCommandPool &getPool();
         VkCommandBuffer &operator[](size_t i);
         size_t size() const;
 
     private:
         void createDescriptorPool(VkDevice &device, size_t size);
         void createDescriptorSets(VkDevice &device, size_t size, VkDescriptorSetLayout &layout,
-                                  Model &model, UniformBuffers &uniforms);
+                                  Texture &texture, UniformBuffers &uniforms);
         void createCommandBuffers(VkDevice &device, VkExtent2D &swapChainExtent,
-                                  renderer::GraphicsPipeline &pipeline,
-                                  renderer::Framebuffers &framebuffers, Model &model);
+                                  renderer::GraphicsPipeline &pipeline, renderer::Framebuffers &framebuffers,
+                                  VkCommandPool &pool, VkBuffer &vertexBuffer, VkBuffer &indexBuffer, size_t size);
 
     private:
-        VkCommandPool _commandPool = nullptr;
         VkDescriptorPool _descriptorPool = nullptr;
         std::vector<VkDescriptorSet> _descriptorSets;
         std::vector<VkCommandBuffer> _commandBuffers;
-
     };
 
 }

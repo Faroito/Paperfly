@@ -4,22 +4,13 @@
 
 #include "CommandBuffers.hpp"
 
-void renderer::CommandBuffers::setUpPool(VkDevice &device, QueueFamilyIndices queueFamilyIndices) {
-    VkCommandPoolCreateInfo poolInfo = {};
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-    poolInfo.flags = 0;
-
-    if (vkCreateCommandPool(device, &poolInfo, nullptr, &_commandPool) != VK_SUCCESS)
-        throw std::runtime_error("failed to create command pool!");
-}
-
-void renderer::CommandBuffers::setUpBuffers(VkDevice &device, SwapChain &swapChain,
-                                            renderer::GraphicsPipeline &pipeline, renderer::Framebuffers &framebuffers,
-                                            Model &model, UniformBuffers &uniforms) {
+void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain,
+                                     renderer::GraphicsPipeline &pipeline, renderer::Framebuffers &framebuffers,
+                                     VkCommandPool &pool, Texture &texture, VkBuffer &vertexBuffer,
+                                     VkBuffer &indexBuffer, size_t size,  UniformBuffers &uniforms) {
     createDescriptorPool(device, swapChain.size());
-    createDescriptorSets(device, swapChain.size(), pipeline.getDescriptorSetLayout(), model, uniforms);
-    createCommandBuffers(device, swapChain.getExtent(), pipeline, framebuffers, model);
+    createDescriptorSets(device, swapChain.size(), pipeline.getDescriptorSetLayout(), texture, uniforms);
+    createCommandBuffers(device, swapChain.getExtent(), pipeline, framebuffers, pool, vertexBuffer, indexBuffer, size);
 }
 
 void renderer::CommandBuffers::createDescriptorPool(VkDevice &device, size_t size) {
@@ -40,7 +31,7 @@ void renderer::CommandBuffers::createDescriptorPool(VkDevice &device, size_t siz
 }
 
 void renderer::CommandBuffers::createDescriptorSets(VkDevice &device, size_t size,
-        VkDescriptorSetLayout &layout, Model &model, UniformBuffers &uniforms) {
+        VkDescriptorSetLayout &layout, Texture &texture, UniformBuffers &uniforms) {
     std::vector<VkDescriptorSetLayout> layouts(size, layout);
     VkDescriptorSetAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -60,8 +51,8 @@ void renderer::CommandBuffers::createDescriptorSets(VkDevice &device, size_t siz
 
         VkDescriptorImageInfo imageInfo = {};
         imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageInfo.imageView = model.getTexture().getImageView();
-        imageInfo.sampler = model.getTexture().getSampler();
+        imageInfo.imageView = texture.getImageView();
+        imageInfo.sampler = texture.getSampler();
 
         std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
 
@@ -88,12 +79,14 @@ void renderer::CommandBuffers::createDescriptorSets(VkDevice &device, size_t siz
 
 void renderer::CommandBuffers::createCommandBuffers(VkDevice &device, VkExtent2D &swapChainExtent,
                                                     renderer::GraphicsPipeline &pipeline,
-                                                    renderer::Framebuffers &framebuffers, Model &model) {
+                                                    renderer::Framebuffers &framebuffers,
+                                                    VkCommandPool &pool, VkBuffer &vertexBuffer,
+                                                    VkBuffer &indexBuffer, size_t size) {
     _commandBuffers.resize(framebuffers.size());
 
     VkCommandBufferAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = _commandPool;
+    allocInfo.commandPool = pool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = (uint32_t) _commandBuffers.size();
 
@@ -126,15 +119,15 @@ void renderer::CommandBuffers::createCommandBuffers(VkDevice &device, VkExtent2D
 
         vkCmdBindPipeline(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 
-        VkBuffer vertexBuffers[] = {model.getVertexBuffer()};
+        VkBuffer vertexBuffers[] = {vertexBuffer};
         VkDeviceSize offsets[] = {0};
 
         vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(_commandBuffers[i], model.getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(_commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                 pipeline.getLayout(), 0, 1, &_descriptorSets[i], 0, nullptr);
-        vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(model.size()), 1, 0, 0, 0);
+        vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(size), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(_commandBuffers[i]);
 
@@ -143,18 +136,10 @@ void renderer::CommandBuffers::createCommandBuffers(VkDevice &device, VkExtent2D
     }
 }
 
-void renderer::CommandBuffers::cleanUpBuffers(VkDevice &device) {
-    vkFreeCommandBuffers(device, _commandPool,
+void renderer::CommandBuffers::cleanUp(VkDevice &device, VkCommandPool &pool) {
+    vkFreeCommandBuffers(device, pool,
                          static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
     vkDestroyDescriptorPool(device, _descriptorPool, nullptr);
-}
-
-void renderer::CommandBuffers::cleanUpPool(VkDevice &device) {
-    vkDestroyCommandPool(device, _commandPool, nullptr);
-}
-
-VkCommandPool &renderer::CommandBuffers::getPool() {
-    return _commandPool;
 }
 
 VkCommandBuffer &renderer::CommandBuffers::operator[](size_t i) {
