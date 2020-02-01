@@ -56,6 +56,7 @@ void renderer::CommandBuffers::createDescriptorSets(VkDevice &device, size_t siz
 
         std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
 
+        // TODO
         descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[0].dstSet = _descriptorSets[i];
         descriptorWrites[0].dstBinding = 0;

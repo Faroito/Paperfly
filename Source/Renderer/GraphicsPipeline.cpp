@@ -69,6 +69,7 @@ void renderer::GraphicsPipeline::createRenderPass(Devices &device, SwapChain &sw
 }
 
 void renderer::GraphicsPipeline::createDescriptorSetLayout(VkDevice &device) {
+    // TODO
     VkDescriptorSetLayoutBinding uboLayoutBinding = {};
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorCount = 1;
@@ -95,8 +96,8 @@ void renderer::GraphicsPipeline::createDescriptorSetLayout(VkDevice &device) {
 }
 
 void renderer::GraphicsPipeline::createGraphicsPipeline(VkDevice &device, SwapChain &swapChain) {
-    auto vertShaderCode = readFile("triangle_vert.spv");
-    auto fragShaderCode = readFile("triangle_frag.spv");
+    auto vertShaderCode = readFile("model_vert.spv");
+    auto fragShaderCode = readFile("model_frag.spv");
 
     VkShaderModule vertShaderModule = createShaderModule(device, vertShaderCode);
     VkShaderModule fragShaderModule = createShaderModule(device, fragShaderCode);
