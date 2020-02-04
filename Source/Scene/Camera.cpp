@@ -23,7 +23,7 @@ glm::mat4 scene::Camera::getViewMatrix() const {
 }
 
 glm::mat4 scene::Camera::getProjectionMatrix(float ratio) const {
-    auto projection = glm::perspective(glm::radians(_fov), ratio, 0.1f, 10.0f);
+    auto projection = glm::perspective(glm::radians(_fov), ratio, 0.1f, 50.0f);
     projection[1][1] *= -1;
     return projection;
 }

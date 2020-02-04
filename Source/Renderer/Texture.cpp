@@ -6,18 +6,18 @@
 
 #include "Texture.hpp"
 
-void renderer::Texture::setUp(Devices &devices, VkCommandPool &pool) {
-    createTextureImage(devices, pool);
+void renderer::Texture::setUp(Devices &devices, VkCommandPool &pool, const std::string &textureName) {
+    createTextureImage(devices, pool, textureName);
     createTextureImageView(devices.get());
     createTextureSampler(devices.get());
 }
 
-void renderer::Texture::createTextureImage(Devices &devices, VkCommandPool &pool) {
+void renderer::Texture::createTextureImage(Devices &devices, VkCommandPool &pool, const std::string &textureName) {
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
 
     int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(textureName.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
     if (!pixels)
         throw std::runtime_error("failed to load texture image!");

@@ -16,14 +16,14 @@ namespace renderer {
     public:
         Texture() = default;
 
-        void setUp(Devices &devices, VkCommandPool &pool);
+        void setUp(Devices &devices, VkCommandPool &pool, const std::string &textureName);
         void cleanUp(VkDevice &device);
 
         VkImageView &getImageView();
         VkSampler &getSampler();
 
     private:
-        void createTextureImage(Devices &devices, VkCommandPool &pool);
+        void createTextureImage(Devices &devices, VkCommandPool &pool, const std::string &textureName);
         void createTextureImageView(VkDevice &device);
         void createTextureSampler(VkDevice &device);
 

@@ -32,7 +32,7 @@ namespace renderer {
         void setUp(VkDevice &device, size_t size);
         void cleanUp(VkDevice &device);
 
-        bool drawFrame(Devices &devices, SwapChain &swapChain, Model &model, bool isResized);
+        bool drawFrame(Devices &devices, SwapChain &swapChain, Model &model, Model &model2, bool isResized);
 
     private:
         size_t _currentFrame = 0;

@@ -4,13 +4,15 @@
 
 #include "CommandBuffers.hpp"
 
-void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain,
-                                     renderer::GraphicsPipeline &pipeline, renderer::Framebuffers &framebuffers,
+void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain, GraphicsPipeline &pipeline,
+                                     Framebuffers &framebuffers,
                                      VkCommandPool &pool, Texture &texture, VkBuffer &vertexBuffer,
-                                     VkBuffer &indexBuffer, size_t size,  UniformBuffers &uniforms) {
+                                     VkBuffer &indexBuffer, size_t size,
+                                     UniformBuffers &uniforms, VkRenderPass &renderPass) {
     createDescriptorPool(device, swapChain.size());
     createDescriptorSets(device, swapChain.size(), pipeline.getDescriptorSetLayout(), texture, uniforms);
-    createCommandBuffers(device, swapChain.getExtent(), pipeline, framebuffers, pool, vertexBuffer, indexBuffer, size);
+    createCommandBuffers(device, swapChain.getExtent(), pipeline, framebuffers, pool, vertexBuffer, indexBuffer, size,
+                         renderPass);
 }
 
 void renderer::CommandBuffers::createDescriptorPool(VkDevice &device, size_t size) {
@@ -80,9 +82,9 @@ void renderer::CommandBuffers::createDescriptorSets(VkDevice &device, size_t siz
 
 void renderer::CommandBuffers::createCommandBuffers(VkDevice &device, VkExtent2D &swapChainExtent,
                                                     renderer::GraphicsPipeline &pipeline,
-                                                    renderer::Framebuffers &framebuffers,
-                                                    VkCommandPool &pool, VkBuffer &vertexBuffer,
-                                                    VkBuffer &indexBuffer, size_t size) {
+                                                    renderer::Framebuffers &framebuffers, VkCommandPool &pool,
+                                                    VkBuffer &vertexBuffer,
+                                                    VkBuffer &indexBuffer, size_t size, VkRenderPass &renderPass) {
     _commandBuffers.resize(framebuffers.size());
 
     VkCommandBufferAllocateInfo allocInfo = {};
@@ -95,6 +97,7 @@ void renderer::CommandBuffers::createCommandBuffers(VkDevice &device, VkExtent2D
         throw std::runtime_error("failed to allocate command buffers!");
 
     for (size_t i = 0; i < _commandBuffers.size(); i++) {
+        std::cout << i << std::endl;
         VkCommandBufferBeginInfo beginInfo = {};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -104,7 +107,7 @@ void renderer::CommandBuffers::createCommandBuffers(VkDevice &device, VkExtent2D
 
         VkRenderPassBeginInfo renderPassInfo = {};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = pipeline.getRenderPass();
+        renderPassInfo.renderPass = renderPass;
         renderPassInfo.framebuffer = framebuffers[i];
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = swapChainExtent;

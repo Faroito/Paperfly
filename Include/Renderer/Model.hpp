@@ -27,15 +27,18 @@ namespace renderer {
      */
     class Model {
     public:
-        Model() = default;
+        explicit Model(const std::string &textureName = "pp_orange_texture.png",
+                const std::string &modelName = "paper_plane.obj");
 
         void setUp(Devices &devices, VkCommandPool &pool);
         void cleanUp(VkDevice &device);
 
-        void setUpSwapChain(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline,
-                            Framebuffers &framebuffers, VkCommandPool &pool);
+        void
+        setUpSwapChain(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline, Framebuffers &framebuffers,
+                       VkCommandPool &pool, VkRenderPass &renderPass);
         void cleanUpSwapChain(VkDevice &device, VkCommandPool &pool);
 
+        void setPosition(glm::vec3 position);
         void setCamera(scene::Camera_ptr_t &_camera, float ratio);
         void updateUniformBuffer(VkDevice &device, uint32_t currentImage);
         VkCommandBuffer &getCommandBuffers(uint32_t i);
@@ -59,6 +62,11 @@ namespace renderer {
         UniformBufferObject _ubo = {};
         UniformBuffers _uniforms;
         CommandBuffers _commandBuffers;
+
+        glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+        const std::string _textureName;
+        const std::string _modelName;
     };
 }
 

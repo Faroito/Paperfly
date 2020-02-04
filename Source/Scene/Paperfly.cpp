@@ -10,6 +10,8 @@ void scene::Paperfly::onDraw() {
     checkKey();
 
     _model.setCamera(_camera, _swapChain.ratio());
+    _model2.setPosition(glm::vec3(1.0f, 0.0f, 0.0f));
+    _model2.setCamera(_camera, _swapChain.ratio());
     Application::onDraw();
 }
 

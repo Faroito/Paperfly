@@ -16,6 +16,7 @@
 #include "Instance.hpp"
 #include "Libraries.hpp"
 #include "Model.hpp"
+#include "RenderPass.hpp"
 #include "Surface.hpp"
 #include "SwapChain.hpp"
 #include "SyncObjects.hpp"
@@ -50,6 +51,7 @@ namespace renderer {
         Window _window;
         SwapChain _swapChain;
         Model _model;
+        Model _model2 = Model("pp_cyan_texture.png");
 
     private:
         const std::string _appName;
@@ -63,6 +65,7 @@ namespace renderer {
         DepthImage _depthImage;
         Framebuffers _framebuffers;
         SyncObjects _syncObjects;
+        RenderPass _renderPass;
     };
 };
 

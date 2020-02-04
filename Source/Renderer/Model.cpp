@@ -6,8 +6,11 @@
 
 #include "Model.hpp"
 
+renderer::Model::Model(const std::string &textureName, const std::string &modelName) :
+    _textureName(PATH + textureName), _modelName(PATH + modelName) {}
+
 void renderer::Model::setUp(Devices &devices, VkCommandPool &pool) {
-    _texture.setUp(devices, pool);
+    _texture.setUp(devices, pool, _textureName);
     loadModel();
     createVertexBuffer(devices, pool);
     createIndexBuffer(devices, pool);
@@ -19,7 +22,7 @@ void renderer::Model::loadModel() {
     std::vector<tinyobj::material_t> materials;
     std::string warn, err;
 
-    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str()))
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, _modelName.c_str()))
         throw std::runtime_error(warn + err);
 
     std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
@@ -105,15 +108,20 @@ void renderer::Model::cleanUp(VkDevice &device) {
 }
 
 void renderer::Model::setUpSwapChain(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline,
-        Framebuffers &framebuffers, VkCommandPool &pool) {
+                                     Framebuffers &framebuffers,
+                                     VkCommandPool &pool, VkRenderPass &renderPass) {
     _uniforms.setUp(devices, swapChain.size());
     _commandBuffers.setUp(devices.get(), swapChain, pipeline, framebuffers, pool,
-            _texture, _vertexBuffer,_indexBuffer, _indices.size(), _uniforms);
+                          _texture, _vertexBuffer, _indexBuffer, _indices.size(), _uniforms, renderPass);
 }
 
 void renderer::Model::cleanUpSwapChain(VkDevice &device, VkCommandPool &pool) {
     _commandBuffers.cleanUp(device, pool);
     _uniforms.cleanUp(device);
+}
+
+void renderer::Model::setPosition(glm::vec3 position) {
+    _pos = position;
 }
 
 void renderer::Model::setCamera(scene::Camera_ptr_t &_camera, float ratio) {
@@ -127,7 +135,7 @@ void renderer::Model::updateUniformBuffer(VkDevice &device, uint32_t currentImag
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    glm::mat4 translate = glm::mat4(1.0f);
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f), _pos);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), time * glm::radians(25.0f), glm::vec3(0.f, 1.f, 0.f));
     glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
     _ubo.model = translate * rotate * scale;
