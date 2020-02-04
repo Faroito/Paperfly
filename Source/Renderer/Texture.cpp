@@ -6,8 +6,10 @@
 
 #include "Texture.hpp"
 
-void renderer::Texture::setUp(Devices &devices, VkCommandPool &pool, const std::string &textureName) {
-    createTextureImage(devices, pool, textureName);
+renderer::Texture::Texture(const renderer::ModelColor color) : _color(color) {}
+
+void renderer::Texture::setUp(renderer::Devices &devices, VkCommandPool &pool) {
+    createTextureImage(devices, pool, PATH + _textureFile.at(_color));
     createTextureImageView(devices.get());
     createTextureSampler(devices.get());
 }

@@ -5,7 +5,8 @@
 #include "CommandBuffers.hpp"
 
 void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain, GraphicsPipeline &pipeline,
-                                     Framebuffers &framebuffers, VkCommandPool &pool, Model &model, Model &model2) {
+                                     Framebuffers &framebuffers, VkCommandPool &pool,
+                                     MeshMap_t &meshes, Models_t &models) {
     _commandBuffers.resize(framebuffers.size());
 
     VkCommandBufferAllocateInfo allocInfo = {};
@@ -33,43 +34,30 @@ void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain, Gra
         renderPassInfo.renderArea.extent = swapChain.getExtent();
 
         std::array<VkClearValue, 2> clearValues = {};
-        clearValues[0].color = {0.07f, 0.17f, 0.24f, 1.0f};
+        clearValues[0].color = BACKGROUND_COLOR;
         clearValues[1].depthStencil = {1.0f, 0};
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
         renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
         vkCmdBindPipeline(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 
-        /**
-         * Start
-         */
+        for (auto &mesh : meshes) {
+            VkBuffer vertexBuffers[] = {mesh.second.getVertexBuffer()};
+            VkDeviceSize offsets[] = {0};
 
-        VkBuffer vertexBuffers[] = {model.getVertexBuffer()};
-        VkDeviceSize offsets[] = {0};
+            vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+            vkCmdBindIndexBuffer(_commandBuffers[i], mesh.second.getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(_commandBuffers[i], model.getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-        vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pipeline.getLayout(), 0, 1, &model.getDescriptorSet(i), 0, nullptr);
-        vkCmdDrawIndexed(_commandBuffers[i], model.getIndicesSize(), 1, 0, 0, 0);
-
-
-        VkBuffer vertexBuffers2[] = {model2.getVertexBuffer()};
-
-        vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, vertexBuffers2, offsets);
-        vkCmdBindIndexBuffer(_commandBuffers[i], model2.getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-        vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pipeline.getLayout(), 0, 1, &model2.getDescriptorSet(i), 0, nullptr);
-        vkCmdDrawIndexed(_commandBuffers[i], model2.getIndicesSize(), 1, 0, 0, 0);
-
-        /**
-        * End
-        */
+            for (auto &model : models) {
+                if (model.getModelType() == mesh.first) {
+                    vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                            pipeline.getLayout(), 0, 1, &model.getDescriptorSet(i), 0, nullptr);
+                    vkCmdDrawIndexed(_commandBuffers[i], mesh.second.getIndicesSize(), 1, 0, 0, 0);
+                }
+            }
+        }
 
         vkCmdEndRenderPass(_commandBuffers[i]);
 

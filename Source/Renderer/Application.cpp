@@ -23,12 +23,25 @@ void renderer::Application::initVulkan() {
     _commandPool.setUp(_devices.get(), _surface.findQueueFamilies(_devices.getPhysical()));
     _depthImage.setUp(_devices, _swapChain.getExtent());
     _framebuffers.setUp(_devices.get(), _swapChain, _pipeline.getRenderPass(), _depthImage.get());
-    _model.setUp(_devices, _commandPool.get());
-    _model2.setUp(_devices, _commandPool.get());
-    _model.setUpSwapChain(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get());
-    _model2.setUpSwapChain(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get());
-    _commandBuffers.setUp(_devices.get(), _swapChain, _pipeline, _framebuffers, _commandPool.get(), _model, _model2);
     _syncObjects.setUp(_devices.get(), _swapChain.size());
+}
+
+void renderer::Application::initModels() {
+    const ModelType allType[] = { PAPER_PLANE };
+    const ModelColor allColor[] = { BLUE, ORANGE };
+
+    for (const auto &type : allType) {
+        _meshes.emplace(type, Mesh(type));
+        _meshes.at(type).setUp(_devices, _commandPool.get());
+    }
+    for (const auto &color : allColor) {
+        _textures.emplace(color, Texture(color));
+        _textures.at(color).setUp(_devices, _commandPool.get());
+    }
+
+    for (auto &model : _models)
+        model.setUp(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get(), _textures);
+    _commandBuffers.setUp(_devices.get(), _swapChain, _pipeline, _framebuffers, _commandPool.get(), _meshes, _models);
 }
 
 void renderer::Application::run() {
@@ -41,7 +54,7 @@ void renderer::Application::run() {
 }
 
 void renderer::Application::onDraw() {
-    if (_syncObjects.drawFrame(_devices, _swapChain, _model, _model2, _commandBuffers, _window.resized)) {
+    if (_syncObjects.drawFrame(_devices, _swapChain, _models, _commandBuffers, _window.resized)) {
         _window.resized = false;
         recreateSwapChain();
     }
@@ -50,8 +63,10 @@ void renderer::Application::onDraw() {
 void renderer::Application::cleanup() {
     cleanupSwapChain();
 
-    _model2.cleanUp(_devices.get());
-    _model.cleanUp(_devices.get());
+    for (auto &mesh : _meshes)
+        mesh.second.cleanUp(_devices.get());
+    for (auto &texture : _textures)
+        texture.second.cleanUp(_devices.get());
     _syncObjects.cleanUp(_devices.get());
     _commandPool.cleanUp(_devices.get());
     _devices.cleanUp();
@@ -65,8 +80,8 @@ void renderer::Application::cleanupSwapChain() {
     _depthImage.cleanUp(_devices.get());
     _framebuffers.cleanUp(_devices.get());
     _commandBuffers.cleanUp(_devices.get(), _commandPool.get());
-    _model2.cleanUpSwapChain(_devices.get());
-    _model.cleanUpSwapChain(_devices.get());
+    for (auto &model : _models)
+        model.cleanUp(_devices.get());
     _pipeline.cleanUp(_devices.get());
     _swapChain.cleanUp(_devices.get());
 }
@@ -81,9 +96,9 @@ void renderer::Application::recreateSwapChain() {
     _pipeline.setUp(_devices, _swapChain);
     _depthImage.setUp(_devices, _swapChain.getExtent());
     _framebuffers.setUp(_devices.get(), _swapChain, _pipeline.getRenderPass(), _depthImage.get());
-    _model2.setUpSwapChain(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get());
-    _model.setUpSwapChain(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get());
-    _commandBuffers.setUp(_devices.get(), _swapChain, _pipeline, _framebuffers, _commandPool.get(), _model, _model2);
+    for (auto &model : _models)
+        model.setUp(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get(), _textures);
+    _commandBuffers.setUp(_devices.get(), _swapChain, _pipeline, _framebuffers, _commandPool.get(), _meshes, _models);
 }
 
 void renderer::Application::onMouseMove(double x, double y) {}

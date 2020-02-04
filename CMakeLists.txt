@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/Framebuffers.cpp
         Source/Renderer/GraphicsPipeline.cpp
         Source/Renderer/Instance.cpp
+        Source/Renderer/Mesh.cpp
         Source/Renderer/Model.cpp
         Source/Renderer/Surface.cpp
         Source/Renderer/SwapChain.cpp

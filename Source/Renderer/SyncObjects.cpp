@@ -34,7 +34,7 @@ void renderer::SyncObjects::cleanUp(VkDevice &device) {
     }
 }
 
-bool renderer::SyncObjects::drawFrame(Devices &devices, SwapChain &swapChain, Model &model, Model &model2,
+bool renderer::SyncObjects::drawFrame(Devices &devices, SwapChain &swapChain, Models_t &models,
         CommandBuffers &buffers, bool isResized) {
     vkWaitForFences(devices.get(), 1, &_inFlightFences[_currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -54,8 +54,8 @@ bool renderer::SyncObjects::drawFrame(Devices &devices, SwapChain &swapChain, Mo
     // Mark the image as now being in use by this frame
     _imagesInFlight[imageIndex] = _inFlightFences[_currentFrame];
 
-    model.updateUniformBuffer(devices.get(), imageIndex);
-    model2.updateUniformBuffer(devices.get(), imageIndex);
+    for (auto &model : models)
+        model.updateUniformBuffer(devices.get(), imageIndex);
 
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -67,8 +67,7 @@ bool renderer::SyncObjects::drawFrame(Devices &devices, SwapChain &swapChain, Mo
     submitInfo.pWaitDstStageMask = waitStages;
 
     submitInfo.commandBufferCount = 1;
-    VkCommandBuffer commandBuffers[] = {buffers[imageIndex]};
-    submitInfo.pCommandBuffers = commandBuffers;
+    submitInfo.pCommandBuffers = &buffers[imageIndex];
 
     VkSemaphore signalSemaphores[] = {_renderFinishedSemaphores[_currentFrame]};
     submitInfo.signalSemaphoreCount = 1;

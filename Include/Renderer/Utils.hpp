@@ -20,6 +20,7 @@ namespace renderer {
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
     const std::string PATH = "../Resources/";
+    const VkClearColorValue BACKGROUND_COLOR = {0.07f, 0.17f, 0.24f, 1.0f};
 
     const std::vector<const char*> validationLayers = {
             "VK_LAYER_KHRONOS_validation"
@@ -47,6 +48,15 @@ namespace renderer {
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkSurfaceFormatKHR> formats;
         std::vector<VkPresentModeKHR> presentModes;
+    };
+
+    enum ModelType {
+        PAPER_PLANE
+    };
+
+    enum ModelColor {
+        BLUE,
+        ORANGE
     };
 
     std::vector<char> readFile(const std::string& filename);

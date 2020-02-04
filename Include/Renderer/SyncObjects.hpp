@@ -2,8 +2,8 @@
 // Created by Timothée Couble on 10/12/2019.
 //
 
-#ifndef SEMAPHORES_HPP
-# define SEMAPHORES_HPP
+#ifndef SYNC_OBJECTS_HPP
+# define SYNC_OBJECTS_HPP
 
 #include <vector>
 
@@ -33,7 +33,7 @@ namespace renderer {
         void setUp(VkDevice &device, size_t size);
         void cleanUp(VkDevice &device);
 
-        bool drawFrame(Devices &devices, SwapChain &swapChain, Model &model, Model &model2,
+        bool drawFrame(Devices &devices, SwapChain &swapChain, Models_t &models,
                 CommandBuffers &buffers, bool isResized);
 
     private:
@@ -46,4 +46,4 @@ namespace renderer {
 
 }
 
-#endif /* !SEMAPHORES_HPP */
+#endif /* !SYNC_OBJECTS_HPP */

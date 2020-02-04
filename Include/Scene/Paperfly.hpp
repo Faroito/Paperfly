@@ -18,6 +18,8 @@ namespace scene {
         Paperfly();
 
     private:
+        void initModels() override;
+
         void onDraw() override;
 
         void checkKey();

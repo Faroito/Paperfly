@@ -4,14 +4,30 @@
 
 #include "Paperfly.hpp"
 
-scene::Paperfly::Paperfly() : renderer::Application("Paperfly") {}
+scene::Paperfly::Paperfly() : renderer::Application("Paperfly") {
+    initModels();
+}
+
+void scene::Paperfly::initModels() {
+    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::BLUE));
+    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::ORANGE));
+    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::BLUE));
+    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::ORANGE));
+    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::BLUE));
+    _models[0].setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    _models[1].setPosition(glm::vec3(1.0f, 0.0f, 0.0f));
+    _models[2].setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    _models[3].setPosition(glm::vec3(1.0f, 1.0f, 0.0f));
+    _models[4].setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+
+    Application::initModels();
+}
 
 void scene::Paperfly::onDraw() {
     checkKey();
 
-    _model.setCamera(_camera, _swapChain.ratio());
-    _model2.setPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-    _model2.setCamera(_camera, _swapChain.ratio());
+    for (auto &model : _models)
+        model.setCamera(_camera, _swapChain.ratio());
     Application::onDraw();
 }
 

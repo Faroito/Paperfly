@@ -5,6 +5,8 @@
 #ifndef APPLICATION_HPP
 # define APPLICATION_HPP
 
+#include <unordered_map>
+
 #include "IApplication.hpp"
 #include "BufferManip.hpp"
 #include "CommandPool.hpp"
@@ -16,6 +18,7 @@
 #include "GraphicsPipeline.hpp"
 #include "Instance.hpp"
 #include "Libraries.hpp"
+#include "Mesh.hpp"
 #include "Model.hpp"
 #include "Surface.hpp"
 #include "SwapChain.hpp"
@@ -33,6 +36,8 @@ namespace renderer {
         void run();
 
     protected:
+        virtual void initModels();
+
         virtual void onDraw();
 
         void onMouseMove(double x, double y) override;
@@ -50,8 +55,7 @@ namespace renderer {
     protected:
         Window _window;
         SwapChain _swapChain;
-        Model _model;
-        Model _model2 = Model("pp_cyan_texture.png");
+        Models_t _models;
 
     private:
         const std::string _appName;
@@ -66,6 +70,9 @@ namespace renderer {
         DepthImage _depthImage;
         Framebuffers _framebuffers;
         SyncObjects _syncObjects;
+
+        MeshMap_t _meshes;
+        TextureMap_t _textures;
     };
 };
 

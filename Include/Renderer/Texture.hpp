@@ -5,6 +5,9 @@
 #ifndef TEXTURE_HPP
 # define TEXTURE_HPP
 
+#include <unordered_map>
+#include <string>
+
 #include "BufferManip.hpp"
 #include "Devices.hpp"
 #include "Libraries.hpp"
@@ -14,9 +17,9 @@ namespace renderer {
 
     class Texture {
     public:
-        Texture() = default;
+        explicit Texture(ModelColor color);
 
-        void setUp(Devices &devices, VkCommandPool &pool, const std::string &textureName);
+        void setUp(Devices &devices, VkCommandPool &pool);
         void cleanUp(VkDevice &device);
 
         VkImageView &getImageView();
@@ -33,7 +36,14 @@ namespace renderer {
         VkImageView _textureImageView;
         VkSampler _textureSampler;
 
+        const ModelColor _color;
+        const std::unordered_map<ModelColor, std::string> _textureFile = {
+                {ModelColor::BLUE, "pp_cyan_texture.png"},
+                {ModelColor::ORANGE, "pp_orange_texture.png"}
+        };
     };
+
+    typedef std::unordered_map<ModelColor, Texture> TextureMap_t;
 }
 
 #endif /* !TEXTURE_HPP */

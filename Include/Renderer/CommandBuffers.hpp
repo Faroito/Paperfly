@@ -12,6 +12,7 @@
 #include "GraphicsPipeline.hpp"
 #include "Libraries.hpp"
 #include "SwapChain.hpp"
+#include "Mesh.hpp"
 #include "Model.hpp"
 #include "Texture.hpp"
 #include "UniformBuffers.hpp"
@@ -28,7 +29,7 @@ namespace renderer {
         CommandBuffers() = default;
 
         void setUp(VkDevice &device, SwapChain &swapChain, GraphicsPipeline &pipeline, Framebuffers &framebuffers,
-                   VkCommandPool &pool, Model &model, Model &model2);
+                   VkCommandPool &pool, MeshMap_t &meshes, Models_t &models);
         void cleanUp(VkDevice &device, VkCommandPool &pool);
 
         VkCommandBuffer &operator[](size_t i);
