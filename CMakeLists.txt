@@ -10,12 +10,12 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/CommandPool.cpp
         Source/Renderer/Debug.cpp
         Source/Renderer/DepthImage.cpp
+        Source/Renderer/DescriptorSets.cpp
         Source/Renderer/Devices.cpp
         Source/Renderer/Framebuffers.cpp
         Source/Renderer/GraphicsPipeline.cpp
         Source/Renderer/Instance.cpp
         Source/Renderer/Model.cpp
-        Source/Renderer/RenderPass.cpp
         Source/Renderer/Surface.cpp
         Source/Renderer/SwapChain.cpp
         Source/Renderer/SyncObjects.cpp

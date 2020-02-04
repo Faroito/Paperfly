@@ -108,15 +108,13 @@ void renderer::Model::cleanUp(VkDevice &device) {
 }
 
 void renderer::Model::setUpSwapChain(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline,
-                                     Framebuffers &framebuffers,
-                                     VkCommandPool &pool, VkRenderPass &renderPass) {
+                                     Framebuffers &framebuffers, VkCommandPool &pool) {
     _uniforms.setUp(devices, swapChain.size());
-    _commandBuffers.setUp(devices.get(), swapChain, pipeline, framebuffers, pool,
-                          _texture, _vertexBuffer, _indexBuffer, _indices.size(), _uniforms, renderPass);
+    _descriptorSets.setUp(devices.get(), swapChain, pipeline.getDescriptorSetLayout(), _texture, _uniforms);
 }
 
-void renderer::Model::cleanUpSwapChain(VkDevice &device, VkCommandPool &pool) {
-    _commandBuffers.cleanUp(device, pool);
+void renderer::Model::cleanUpSwapChain(VkDevice &device) {
+    _descriptorSets.cleanUp(device);
     _uniforms.cleanUp(device);
 }
 
@@ -146,6 +144,19 @@ void renderer::Model::updateUniformBuffer(VkDevice &device, uint32_t currentImag
     vkUnmapMemory(device, _uniforms.getMemory(currentImage));
 }
 
-VkCommandBuffer &renderer::Model::getCommandBuffers(uint32_t i) {
-    return _commandBuffers[i];
+VkBuffer &renderer::Model::getVertexBuffer() {
+    return _vertexBuffer;
 }
+
+VkBuffer &renderer::Model::getIndexBuffer() {
+    return _indexBuffer;
+}
+
+uint32_t renderer::Model::getIndicesSize() {
+    return _indices.size();
+}
+
+VkDescriptorSet &renderer::Model::getDescriptorSet(size_t i) {
+    return _descriptorSets[i];
+}
+

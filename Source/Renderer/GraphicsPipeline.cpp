@@ -69,7 +69,6 @@ void renderer::GraphicsPipeline::createRenderPass(Devices &device, SwapChain &sw
 }
 
 void renderer::GraphicsPipeline::createDescriptorSetLayout(VkDevice &device) {
-    // TODO
     VkDescriptorSetLayoutBinding uboLayoutBinding = {};
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorCount = 1;

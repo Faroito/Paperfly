@@ -7,6 +7,7 @@
 
 #include <vector>
 
+#include "CommandBuffers.hpp"
 #include "Devices.hpp"
 #include "Libraries.hpp"
 #include "Model.hpp"
@@ -32,7 +33,8 @@ namespace renderer {
         void setUp(VkDevice &device, size_t size);
         void cleanUp(VkDevice &device);
 
-        bool drawFrame(Devices &devices, SwapChain &swapChain, Model &model, Model &model2, bool isResized);
+        bool drawFrame(Devices &devices, SwapChain &swapChain, Model &model, Model &model2,
+                CommandBuffers &buffers, bool isResized);
 
     private:
         size_t _currentFrame = 0;

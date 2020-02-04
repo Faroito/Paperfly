@@ -8,6 +8,7 @@
 #include "IApplication.hpp"
 #include "BufferManip.hpp"
 #include "CommandPool.hpp"
+#include "CommandBuffers.hpp"
 #include "Debug.hpp"
 #include "DepthImage.hpp"
 #include "Devices.hpp"
@@ -16,7 +17,6 @@
 #include "Instance.hpp"
 #include "Libraries.hpp"
 #include "Model.hpp"
-#include "RenderPass.hpp"
 #include "Surface.hpp"
 #include "SwapChain.hpp"
 #include "SyncObjects.hpp"
@@ -62,10 +62,10 @@ namespace renderer {
         Devices _devices;
         GraphicsPipeline _pipeline;
         CommandPool _commandPool;
+        CommandBuffers _commandBuffers;
         DepthImage _depthImage;
         Framebuffers _framebuffers;
         SyncObjects _syncObjects;
-        RenderPass _renderPass;
     };
 };
 

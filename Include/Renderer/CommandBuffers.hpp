@@ -12,6 +12,7 @@
 #include "GraphicsPipeline.hpp"
 #include "Libraries.hpp"
 #include "SwapChain.hpp"
+#include "Model.hpp"
 #include "Texture.hpp"
 #include "UniformBuffers.hpp"
 #include "Utils.hpp"
@@ -27,24 +28,13 @@ namespace renderer {
         CommandBuffers() = default;
 
         void setUp(VkDevice &device, SwapChain &swapChain, GraphicsPipeline &pipeline, Framebuffers &framebuffers,
-                   VkCommandPool &pool, Texture &texture, VkBuffer &vertexBuffer, VkBuffer &indexBuffer, size_t size,
-                   UniformBuffers &uniforms, VkRenderPass &renderPass);
+                   VkCommandPool &pool, Model &model, Model &model2);
         void cleanUp(VkDevice &device, VkCommandPool &pool);
 
         VkCommandBuffer &operator[](size_t i);
         size_t size() const;
 
     private:
-        void createDescriptorPool(VkDevice &device, size_t size);
-        void createDescriptorSets(VkDevice &device, size_t size, VkDescriptorSetLayout &layout,
-                                  Texture &texture, UniformBuffers &uniforms);
-        void createCommandBuffers(VkDevice &device, VkExtent2D &swapChainExtent, renderer::GraphicsPipeline &pipeline,
-                                  renderer::Framebuffers &framebuffers, VkCommandPool &pool, VkBuffer &vertexBuffer,
-                                  VkBuffer &indexBuffer, size_t size, VkRenderPass &renderPass);
-
-    private:
-        VkDescriptorPool _descriptorPool = nullptr;
-        std::vector<VkDescriptorSet> _descriptorSets;
         std::vector<VkCommandBuffer> _commandBuffers;
     };
 
