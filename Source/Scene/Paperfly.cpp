@@ -6,19 +6,22 @@
 
 scene::Paperfly::Paperfly() : renderer::Application("Paperfly") {
     initModels();
+    std::srand(std::time(nullptr));
 }
 
 void scene::Paperfly::initModels() {
-    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::BLUE));
-    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::ORANGE));
-    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::BLUE));
-    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::ORANGE));
-    _models.push_back(renderer::Model(renderer::PAPER_PLANE, renderer::BLUE));
-    _models[0].setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    _models[1].setPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-    _models[2].setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
-    _models[3].setPosition(glm::vec3(1.0f, 1.0f, 0.0f));
-    _models[4].setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+
+    const size_t planeNb = 30;
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    auto findBlock = [&position](std::unique_ptr<renderer::Model> &obj) { return obj->getPosition() == position; };
+    for (size_t i = 0; i < planeNb; i++) {
+        do {
+            position = glm::vec3(rand() % 7 - 3, (rand() % 13 - 6) * 0.5, (rand() % 5) * 1.5);
+        } while (std::find_if(std::begin(_models), std::end(_models), findBlock) != std::end(_models));
+        _models.push_back(std::make_unique<PaperPlane>(PaperPlane(renderer::COLORS_AVAILABLE[i % 7])));
+        _models.back()->setPosition(position);
+    }
 
     Application::initModels();
 }
@@ -26,8 +29,18 @@ void scene::Paperfly::initModels() {
 void scene::Paperfly::onDraw() {
     checkKey();
 
-    for (auto &model : _models)
-        model.setCamera(_camera, _swapChain.ratio());
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    for (auto &model : _models) {
+        if (time > 0.02) {
+            startTime = std::chrono::high_resolution_clock::now();
+            model->update(_models);
+        }
+        model->setCamera(_camera, _swapChain.ratio());
+    }
     Application::onDraw();
 }
 

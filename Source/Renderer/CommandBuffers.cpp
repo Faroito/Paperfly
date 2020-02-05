@@ -43,6 +43,7 @@ void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain, Gra
         vkCmdBeginRenderPass(_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBindPipeline(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 
+        // TODO: use https://stackoverflow.com/questions/50956414/what-is-a-push-constant-in-vulkan instead
         for (auto &mesh : meshes) {
             VkBuffer vertexBuffers[] = {mesh.second.getVertexBuffer()};
             VkDeviceSize offsets[] = {0};
@@ -51,9 +52,9 @@ void renderer::CommandBuffers::setUp(VkDevice &device, SwapChain &swapChain, Gra
             vkCmdBindIndexBuffer(_commandBuffers[i], mesh.second.getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
             for (auto &model : models) {
-                if (model.getModelType() == mesh.first) {
+                if (model->getModelType() == mesh.first) {
                     vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            pipeline.getLayout(), 0, 1, &model.getDescriptorSet(i), 0, nullptr);
+                            pipeline.getLayout(), 0, 1, &model->getDescriptorSet(i), 0, nullptr);
                     vkCmdDrawIndexed(_commandBuffers[i], mesh.second.getIndicesSize(), 1, 0, 0, 0);
                 }
             }

@@ -56,8 +56,15 @@ namespace renderer {
 
     enum ModelColor {
         BLUE,
-        ORANGE
+        CYAN,
+        ORANGE,
+        RED,
+        GREEN,
+        PURPLE,
+        YELLOW
     };
+
+    const ModelColor COLORS_AVAILABLE[] = { BLUE, CYAN, ORANGE, RED, GREEN, PURPLE, YELLOW };
 
     std::vector<char> readFile(const std::string& filename);
     VkFormat findDepthFormat(VkPhysicalDevice &device);

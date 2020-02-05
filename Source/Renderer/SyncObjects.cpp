@@ -55,7 +55,7 @@ bool renderer::SyncObjects::drawFrame(Devices &devices, SwapChain &swapChain, Mo
     _imagesInFlight[imageIndex] = _inFlightFences[_currentFrame];
 
     for (auto &model : models)
-        model.updateUniformBuffer(devices.get(), imageIndex);
+        model->updateUniformBuffer(devices.get(), imageIndex);
 
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

@@ -26,6 +26,7 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/Window.cpp
         Source/Scene/Camera.cpp
         Source/Scene/Paperfly.cpp
+        Source/Scene/PaperPlane.cpp
         Source/Main.cpp)
 
 find_package(Vulkan REQUIRED)

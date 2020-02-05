@@ -6,11 +6,15 @@
 # define PAPERFLY_HPP
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include <memory>
+#include <algorithm>
 #include <unordered_map>
 
 #include "Application.hpp"
 #include "Camera.hpp"
+#include "PaperPlane.hpp"
 
 namespace scene {
     class Paperfly : public renderer::Application {
