@@ -27,19 +27,15 @@ void renderer::Application::initVulkan() {
 }
 
 void renderer::Application::initModels() {
-    const ModelType allType[] = { PAPER_PLANE };
+    const ModelType allType[] = { PAPER_PLANE, CYLINDER };
 
     for (const auto &type : allType) {
         _meshes.emplace(type, Mesh(type));
         _meshes.at(type).setUp(_devices, _commandPool.get());
     }
-    for (const auto &color : COLORS_AVAILABLE) {
-        _textures.emplace(color, Texture(color));
-        _textures.at(color).setUp(_devices, _commandPool.get());
-    }
 
     for (auto &model : _models)
-        model->setUp(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get(), _textures);
+        model->setUp(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get(), _meshes);
     _commandBuffers.setUp(_devices.get(), _swapChain, _pipeline, _framebuffers, _commandPool.get(), _meshes, _models);
 }
 
@@ -64,8 +60,6 @@ void renderer::Application::cleanup() {
 
     for (auto &mesh : _meshes)
         mesh.second.cleanUp(_devices.get());
-    for (auto &texture : _textures)
-        texture.second.cleanUp(_devices.get());
     _syncObjects.cleanUp(_devices.get());
     _commandPool.cleanUp(_devices.get());
     _devices.cleanUp();
@@ -96,7 +90,7 @@ void renderer::Application::recreateSwapChain() {
     _depthImage.setUp(_devices, _swapChain.getExtent());
     _framebuffers.setUp(_devices.get(), _swapChain, _pipeline.getRenderPass(), _depthImage.get());
     for (auto &model : _models)
-        model->setUp(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get(), _textures);
+        model->setUp(_devices, _swapChain, _pipeline, _framebuffers, _commandPool.get(), _meshes);
     _commandBuffers.setUp(_devices.get(), _swapChain, _pipeline, _framebuffers, _commandPool.get(), _meshes, _models);
 }
 

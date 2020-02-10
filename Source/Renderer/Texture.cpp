@@ -6,10 +6,10 @@
 
 #include "Texture.hpp"
 
-renderer::Texture::Texture(const renderer::ModelColor color) : _color(color) {}
+renderer::Texture::Texture(std::string path, ModelColor color) : _color(color), _path(path) {}
 
 void renderer::Texture::setUp(renderer::Devices &devices, VkCommandPool &pool) {
-    createTextureImage(devices, pool, PATH + _textureFile.at(_color));
+    createTextureImage(devices, pool, _path);
     createTextureImageView(devices.get());
     createTextureSampler(devices.get());
 }
@@ -41,7 +41,8 @@ void renderer::Texture::createTextureImage(Devices &devices, VkCommandPool &pool
 
     BufferManip::transitionImageLayout(devices, pool, _textureImage, VK_FORMAT_R8G8B8A8_UNORM,
                           VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-    BufferManip::copyBufferToImage(devices, pool, stagingBuffer, _textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+    BufferManip::copyBufferToImage(devices, pool, stagingBuffer, _textureImage,
+            static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 
     BufferManip::transitionImageLayout(devices, pool, _textureImage, VK_FORMAT_R8G8B8A8_UNORM,
                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

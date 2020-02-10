@@ -10,17 +10,17 @@ renderer::Mesh::Mesh(const ModelType type) : _type(type) {}
 
 void renderer::Mesh::setUp(renderer::Devices &devices, VkCommandPool &pool) {
     loadModel();
+    loadTextures(devices, pool);
     createVertexBuffer(devices, pool);
     createIndexBuffer(devices, pool);
 }
-
 
 void renderer::Mesh::loadModel() {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
     std::string warn, err;
-    std::string path = PATH + _modelFile.at(_type);
+    std::string path = PATH + _modelFile.at(_type) + ".obj";
 
     if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str()))
         throw std::runtime_error(warn + err);
@@ -47,7 +47,22 @@ void renderer::Mesh::loadModel() {
             _indices.push_back(uniqueVertices[vertex]);
         }
     }
+}
 
+void renderer::Mesh::loadTextures(Devices &devices, VkCommandPool &pool) {
+    namespace fs = std::filesystem;
+    const std::string path = PATH + _modelFile.at(_type) + "_textures/";
+
+    for (const auto& entry : fs::directory_iterator(path)) {
+        auto filename = entry.path().filename().string();
+        if (filename.size() > 4)
+            filename.resize(filename.size() - 4);
+        if (entry.is_regular_file() && _colorMap.find(filename) != _colorMap.end()) {
+            const ModelColor color = _colorMap.at(filename);
+            _textures.emplace(color, Texture(path + filename + ".png", color));
+            _textures.at(color).setUp(devices, pool);
+        }
+    }
 }
 
 void renderer::Mesh::createVertexBuffer(renderer::Devices &devices, VkCommandPool &pool) {
@@ -99,6 +114,8 @@ void renderer::Mesh::createIndexBuffer(renderer::Devices &devices, VkCommandPool
 }
 
 void renderer::Mesh::cleanUp(VkDevice &device) {
+    for (auto &texture : _textures)
+        texture.second.cleanUp(device);
     vkDestroyBuffer(device, _vertexBuffer, nullptr);
     vkFreeMemory(device, _vertexBufferMemory, nullptr);
     vkDestroyBuffer(device, _indexBuffer, nullptr);
@@ -115,4 +132,8 @@ VkBuffer &renderer::Mesh::getIndexBuffer() {
 
 uint32_t renderer::Mesh::getIndicesSize() const {
     return _indices.size();
+}
+
+renderer::TextureMap_t &renderer::Mesh::getTextures() {
+    return _textures;
 }

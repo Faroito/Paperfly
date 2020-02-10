@@ -51,7 +51,8 @@ namespace renderer {
     };
 
     enum ModelType {
-        PAPER_PLANE
+        PAPER_PLANE,
+        CYLINDER
     };
 
     enum ModelColor {
@@ -72,5 +73,7 @@ namespace renderer {
                                  VkImageTiling tiling, VkFormatFeatureFlags features);
     uint32_t findMemoryType(VkPhysicalDevice &device, uint32_t typeFilter, VkMemoryPropertyFlags properties);
 }
+
+std::ostream	&operator<<(std::ostream &stream, const glm::vec3 &vec);
 
 #endif /* !UTILS_HPP */

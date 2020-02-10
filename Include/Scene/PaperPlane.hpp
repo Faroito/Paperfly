@@ -21,8 +21,13 @@ namespace scene {
 
         void update(renderer::Models_t &models) override;
         void updateUniformBuffer(VkDevice &device, uint32_t currentImage) override;
+        bool willCollide(glm::vec3 position) override;
 
     private:
+        glm::vec3 center(renderer::Models_t &models, size_t &size);
+        glm::vec3 separation(renderer::Models_t &models);
+        glm::vec3 alignment(renderer::Models_t &models, size_t &size);
+        glm::vec3 collision(renderer::Models_t &models);
         glm::vec3 boundaries();
 
     private:
@@ -30,7 +35,5 @@ namespace scene {
         const double _maxSpeed = 0.5f;
     };
 }
-
-std::ostream	&operator<<(std::ostream &stream, const glm::vec3 &vec);
 
 #endif /* !PAPER_PLANE_HPP */

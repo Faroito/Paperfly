@@ -11,7 +11,8 @@ renderer::Model::Model(const renderer::ModelType type, const renderer::ModelColo
 
 void
 renderer::Model::setUp(renderer::Devices &devices, renderer::SwapChain &swapChain, renderer::GraphicsPipeline &pipeline,
-                       renderer::Framebuffers &framebuffers, VkCommandPool &pool, TextureMap_t &textures) {
+                       renderer::Framebuffers &framebuffers, VkCommandPool &pool, MeshMap_t &meshes) {
+    auto &textures = meshes.at(_type).getTextures();
     _uniforms.setUp(devices, swapChain.size());
     _descriptorSets.setUp(devices.get(), swapChain, pipeline.getDescriptorSetLayout(), textures.at(_color), _uniforms);
 }
@@ -43,13 +44,17 @@ void renderer::Model::updateUniformBuffer(VkDevice &device, uint32_t currentImag
     rotate = glm::rotate(rotate, glm::radians(_orientation.y), glm::vec3(0.f, 1.f, 0.f));
     rotate = glm::rotate(rotate, glm::radians(_orientation.z), glm::vec3(0.f, 0.f, 1.f));
     rotate = glm::translate(rotate, -_offset);
-    glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+    glm::mat4 scale = glm::scale(glm::mat4(1.0f), _scale);
     _ubo.model = translate * rotate * scale;
 
     void* data;
     vkMapMemory(device, _uniforms.getMemory(currentImage), 0, sizeof(_ubo), 0, &data);
     memcpy(data, &_ubo, sizeof(_ubo));
     vkUnmapMemory(device, _uniforms.getMemory(currentImage));
+}
+
+bool renderer::Model::willCollide(glm::vec3 position) {
+    return false;
 }
 
 size_t renderer::Model::getId() const {

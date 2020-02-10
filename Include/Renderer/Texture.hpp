@@ -17,7 +17,7 @@ namespace renderer {
 
     class Texture {
     public:
-        explicit Texture(ModelColor color);
+        explicit Texture(std::string path, ModelColor color);
 
         void setUp(Devices &devices, VkCommandPool &pool);
         void cleanUp(VkDevice &device);
@@ -37,15 +37,7 @@ namespace renderer {
         VkSampler _textureSampler;
 
         const ModelColor _color;
-        const std::unordered_map<ModelColor, std::string> _textureFile = {
-                {ModelColor::BLUE, "pp_blue_texture.png"},
-                {ModelColor::ORANGE, "pp_orange_texture.png"},
-                {ModelColor::PURPLE, "pp_purple_texture.png"},
-                {ModelColor::CYAN, "pp_cyan_texture.png"},
-                {ModelColor::RED, "pp_red_texture.png"},
-                {ModelColor::GREEN, "pp_green_texture.png"},
-                {ModelColor::YELLOW, "pp_yellow_texture.png"}
-        };
+        const std::string _path;
     };
 
     typedef std::unordered_map<ModelColor, Texture> TextureMap_t;

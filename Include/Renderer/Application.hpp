@@ -72,7 +72,6 @@ namespace renderer {
         SyncObjects _syncObjects;
 
         MeshMap_t _meshes;
-        TextureMap_t _textures;
     };
 };
 

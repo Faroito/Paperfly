@@ -56,3 +56,8 @@ uint32_t renderer::findMemoryType(VkPhysicalDevice &device, uint32_t typeFilter,
 
     throw std::runtime_error("failed to find suitable memory type!");
 }
+
+std::ostream &operator<<(std::ostream &stream, const glm::vec3 &vec) {
+    stream << vec.x << " " << vec.y << " " << vec.z;
+    return stream;
+}

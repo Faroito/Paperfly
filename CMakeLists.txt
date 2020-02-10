@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/Utils.cpp
         Source/Renderer/Window.cpp
         Source/Scene/Camera.cpp
+        Source/Scene/Cylinder.cpp
         Source/Scene/Paperfly.cpp
         Source/Scene/PaperPlane.cpp
         Source/Main.cpp)

@@ -14,6 +14,7 @@
 #include "GraphicsPipeline.hpp"
 #include "DescriptorSets.hpp"
 #include "Devices.hpp"
+#include "Mesh.hpp"
 #include "Libraries.hpp"
 #include "Texture.hpp"
 #include "UniformBuffers.hpp"
@@ -29,7 +30,7 @@ namespace renderer {
         virtual ~Model() = default;
 
         void setUp(Devices &devices, SwapChain &swapChain, GraphicsPipeline &pipeline,
-                Framebuffers &framebuffers, VkCommandPool &pool, TextureMap_t &textures);
+                Framebuffers &framebuffers, VkCommandPool &pool, MeshMap_t &meshes);
         void cleanUp(VkDevice &device);
 
         void setPosition(glm::vec3 position);
@@ -38,6 +39,7 @@ namespace renderer {
 
         virtual void update(std::vector<std::unique_ptr<Model>> &models);
         virtual void updateUniformBuffer(VkDevice &device, uint32_t currentImage);
+        virtual bool willCollide(glm::vec3 position);
 
         size_t getId() const;
         glm::vec3 getPosition() const;
@@ -49,7 +51,8 @@ namespace renderer {
         glm::vec3 _velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 _orientation = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 _offset = glm::vec3(0.0f, 0.5f, 0.0f);
+        glm::vec3 _offset = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 _scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     private:
         const size_t _id;

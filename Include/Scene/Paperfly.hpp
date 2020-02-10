@@ -14,6 +14,7 @@
 
 #include "Application.hpp"
 #include "Camera.hpp"
+#include "Cylinder.hpp"
 #include "PaperPlane.hpp"
 
 namespace scene {

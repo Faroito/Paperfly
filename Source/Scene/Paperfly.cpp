@@ -10,8 +10,7 @@ scene::Paperfly::Paperfly() : renderer::Application("Paperfly") {
 }
 
 void scene::Paperfly::initModels() {
-
-    const size_t planeNb = 30;
+    const size_t planeNb = 40;
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 
     auto findBlock = [&position](std::unique_ptr<renderer::Model> &obj) { return obj->getPosition() == position; };
@@ -22,6 +21,9 @@ void scene::Paperfly::initModels() {
         _models.push_back(std::make_unique<PaperPlane>(PaperPlane(renderer::COLORS_AVAILABLE[i % 7])));
         _models.back()->setPosition(position);
     }
+
+    _models.push_back(std::make_unique<Cylinder>(Cylinder(renderer::RED)));
+    _models.back()->setPosition(glm::vec3(0.0f, 0.0f , 15.0f));
 
     Application::initModels();
 }

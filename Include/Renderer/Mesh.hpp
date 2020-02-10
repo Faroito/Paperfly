@@ -7,10 +7,12 @@
 
 #include <vector>
 #include <unordered_map>
+#include <filesystem>
 
 #include "BufferManip.hpp"
 #include "Devices.hpp"
 #include "Libraries.hpp"
+#include "Texture.hpp"
 #include "Utils.hpp"
 #include "Vertex.hpp"
 
@@ -18,6 +20,7 @@ namespace renderer {
 
     /**
      * Load the vertices and indices from an obj model file.
+     * Load also textures
      */
     class Mesh {
     public:
@@ -29,9 +32,11 @@ namespace renderer {
         VkBuffer &getVertexBuffer();
         VkBuffer &getIndexBuffer();
         uint32_t getIndicesSize() const;
+        TextureMap_t &getTextures();
 
     private:
         void loadModel();
+        void loadTextures(Devices &devices, VkCommandPool &pool);
         void createVertexBuffer(Devices &devices, VkCommandPool &pool);
         void createIndexBuffer(Devices &devices, VkCommandPool &pool);
 
@@ -44,9 +49,22 @@ namespace renderer {
         VkBuffer _indexBuffer;
         VkDeviceMemory _indexBufferMemory;
 
+        TextureMap_t _textures;
+
         const ModelType _type;
         const std::unordered_map<ModelType, std::string> _modelFile = {
-                {ModelType::PAPER_PLANE, "paper_plane.obj"}
+                {ModelType::PAPER_PLANE, "paper_plane"},
+                {ModelType::CYLINDER, "cylinder"}
+        };
+
+        const std::unordered_map<std::string, ModelColor> _colorMap = {
+                {"blue", ModelColor::BLUE},
+                {"orange", ModelColor::ORANGE},
+                {"purple", ModelColor::PURPLE},
+                {"cyan", ModelColor::CYAN},
+                {"red", ModelColor::RED},
+                {"green", ModelColor::GREEN},
+                {"yellow", ModelColor::YELLOW}
         };
 
     };
