@@ -1,13 +1,19 @@
 # Paperfly
 
-### TODO
+First project in Vulkan with boids simulation.
 
-Imgui
+## Demo
 
-[FBX](https://help.autodesk.com/cloudhelp/2018/ENU/FBX-Developer-Help/cpp_ref/examples.html)
+![](paperfly.gif)
 
-### References
+## References
 
 https://learnopengl.com/
 
 https://vulkan-tutorial.com/
+
+## TODO
+
+Imgui
+
+[FBX](https://help.autodesk.com/cloudhelp/2018/ENU/FBX-Developer-Help/cpp_ref/examples.html)
